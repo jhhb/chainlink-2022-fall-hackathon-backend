@@ -68,3 +68,5 @@ export type { KeepersCounterEchidnaTest } from "./contracts/test/fuzzing/Keepers
 export { KeepersCounterEchidnaTest__factory } from "./factories/contracts/test/fuzzing/KeepersCounterEchidnaTest__factory";
 export type { MockOracle } from "./contracts/test/MockOracle";
 export { MockOracle__factory } from "./factories/contracts/test/MockOracle__factory";
+export type { VRFD20 } from "./contracts/VRFD20";
+export { VRFD20__factory } from "./factories/contracts/VRFD20__factory";

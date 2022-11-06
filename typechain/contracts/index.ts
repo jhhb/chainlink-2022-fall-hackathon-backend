@@ -7,3 +7,4 @@ export type { APIConsumer } from "./APIConsumer";
 export type { KeepersCounter } from "./KeepersCounter";
 export type { PriceConsumerV3 } from "./PriceConsumerV3";
 export type { RandomNumberConsumerV2 } from "./RandomNumberConsumerV2";
+export type { VRFD20 } from "./VRFD20";
