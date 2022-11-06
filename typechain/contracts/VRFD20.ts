@@ -34,7 +34,7 @@ export interface VRFD20Interface extends utils.Interface {
     "getVrfCoordinator()": FunctionFragment;
     "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
-    "rollDice(address)": FunctionFragment;
+    "rollDice()": FunctionFragment;
   };
 
   getFunction(
@@ -67,10 +67,7 @@ export interface VRFD20Interface extends utils.Interface {
     functionFragment: "rawFulfillRandomWords",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "rollDice",
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: "rollDice", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "getKeyHash", data: BytesLike): Result;
   decodeFunctionResult(
@@ -164,7 +161,6 @@ export interface VRFD20 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     rollDice(
-      roller: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -187,7 +183,6 @@ export interface VRFD20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   rollDice(
-    roller: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -209,10 +204,7 @@ export interface VRFD20 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    rollDice(
-      roller: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    rollDice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -254,7 +246,6 @@ export interface VRFD20 extends BaseContract {
     ): Promise<BigNumber>;
 
     rollDice(
-      roller: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -278,7 +269,6 @@ export interface VRFD20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     rollDice(
-      roller: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -86,10 +86,9 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @dev Warning: if the VRF response is delayed, avoid calling requestRandomness repeatedly
      * as that would give miners/VRF operators latitude about which VRF response arrives first.
      * @dev You must review your implementation details with extreme care.
-     *
-     * @param roller address of the roller
      */
-    function rollDice(address roller) public onlyOwner returns (uint256 requestId) {
+    function rollDice() public returns (uint256 requestId) {
+        address roller = msg.sender;
         // If roll is currently in progress for user, do not allow.
         require(user_address_to_status[roller] != ROLL_STATUS_RUNNING, 'You must wait for your current roll to complete before rolling again');
         
@@ -172,11 +171,6 @@ contract VRFD20 is VRFConsumerBaseV2 {
             'Karstark'
         ];
         return houseNames[id - 1];
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == s_owner);
-        _;
     }
 
     // Keep the below code for testing purposes.
