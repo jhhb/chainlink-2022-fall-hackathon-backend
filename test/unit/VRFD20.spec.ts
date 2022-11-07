@@ -16,11 +16,6 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
       vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
     })
 
-    it('confirms the mock coordinator address is the address used by the contract', async () => {
-      const getCoordinatorResult = await vrfConsumer.getVrfCoordinator();
-      expect(vrfCoordinatorV2Mock.address).to.not.eq(getCoordinatorResult);
-    });
-
     describe('#rollDice', async () => {
       it("Should successfully request a random number", async () => {
         const [account1] = await ethers.getSigners();

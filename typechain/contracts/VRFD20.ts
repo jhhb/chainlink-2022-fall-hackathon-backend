@@ -31,7 +31,6 @@ export interface VRFD20Interface extends utils.Interface {
   functions: {
     "getKeyHash()": FunctionFragment;
     "getSubscriptionId()": FunctionFragment;
-    "getVrfCoordinator()": FunctionFragment;
     "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
     "rollDice()": FunctionFragment;
@@ -41,7 +40,6 @@ export interface VRFD20Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "getKeyHash"
       | "getSubscriptionId"
-      | "getVrfCoordinator"
       | "house"
       | "rawFulfillRandomWords"
       | "rollDice"
@@ -53,10 +51,6 @@ export interface VRFD20Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getSubscriptionId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getVrfCoordinator",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -72,10 +66,6 @@ export interface VRFD20Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: "getKeyHash", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSubscriptionId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getVrfCoordinator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "house", data: BytesLike): Result;
@@ -147,8 +137,6 @@ export interface VRFD20 extends BaseContract {
 
     getSubscriptionId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getVrfCoordinator(overrides?: CallOverrides): Promise<[string]>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -169,8 +157,6 @@ export interface VRFD20 extends BaseContract {
 
   getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getVrfCoordinator(overrides?: CallOverrides): Promise<string>;
-
   house(
     user_address: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -190,8 +176,6 @@ export interface VRFD20 extends BaseContract {
     getKeyHash(overrides?: CallOverrides): Promise<string>;
 
     getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getVrfCoordinator(overrides?: CallOverrides): Promise<string>;
 
     house(
       user_address: PromiseOrValue<string>,
@@ -232,8 +216,6 @@ export interface VRFD20 extends BaseContract {
 
     getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getVrfCoordinator(overrides?: CallOverrides): Promise<BigNumber>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -254,8 +236,6 @@ export interface VRFD20 extends BaseContract {
     getKeyHash(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getSubscriptionId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getVrfCoordinator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     house(
       user_address: PromiseOrValue<string>,

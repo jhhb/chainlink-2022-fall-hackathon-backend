@@ -28,7 +28,6 @@ contract VRFD20 is VRFConsumerBaseV2 {
     uint8 ROLL_STATUS_RAN = 2;
 
     uint64 s_subscriptionId;
-    address vrfCoordinator;
     bytes32 s_keyHash;
 
     // Goerli coordinator. For other networks,
@@ -121,6 +120,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @param randomWords  uint256[] The random result returned by the oracle.
      */
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
+        // TODO: JB - May need handling for a non-existent request.
         address user_address = s_rollers[requestId];
         uint256 d20Value = (randomWords[0] % 20) + 1;
 
@@ -171,11 +171,6 @@ contract VRFD20 is VRFConsumerBaseV2 {
             'Karstark'
         ];
         return houseNames[id - 1];
-    }
-
-    // Keep the below code for testing purposes.
-    function getVrfCoordinator() public view returns (address) {
-        return vrfCoordinator;
     }
 
     function getSubscriptionId() public view returns (uint64) {
