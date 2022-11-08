@@ -208,7 +208,39 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
                       expect(result).to.eq("Lannister")
                   })
               })
-          })
+          });
+
+          describe("#getUserStatus", () => {
+            beforeEach(async () => {
+              await deployments.fixture(["mocks", "vrfd20"])
+              vrfConsumer = await ethers.getContract("VRFD20");
+
+              vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
+            });
+
+            context("for each state transition", () => {
+              it("returns the expected value", async () => {
+                const [_account1, account2] = await ethers.getSigners()
+
+                const result = await vrfConsumer.connect(account2).getUserStatus(account2.address);
+                expect(result).to.be.eq('NONE');
+
+                await vrfConsumer.connect(account2).rollDice();
+
+                const resultAfterRoll = await vrfConsumer.connect(account2).getUserStatus(account2.address);
+                expect(resultAfterRoll).to.be.eq('RUNNING');
+
+                await vrfCoordinatorV2Mock.fulfillRandomWords(1, vrfConsumer.address)
+
+                const resultAfterFulfill = await vrfConsumer.connect(account2).getUserStatus(account2.address);
+                expect(resultAfterFulfill).to.be.eq('RAN');
+
+                await vrfConsumer.connect(account2).rollDice();
+                const resultAfterReroll = await vrfConsumer.connect(account2).getUserStatus(account2.address);
+                expect(resultAfterReroll).to.be.eq('RUNNING');
+              });
+            })
+          });
 
           // TODO: JB - Need to see more examples to make sure this is working.
           describe("Deployment", async () => {

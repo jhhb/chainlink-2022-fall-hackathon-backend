@@ -174,4 +174,18 @@ contract VRFD20 is VRFConsumerBaseV2 {
         ];
         return houseNames[id - 1];
     }
+
+    function getUserStatus(address addr) public view returns (string memory) {
+        uint256 status = user_address_to_status[addr];
+        return _getUserStatus(status);
+    }
+
+    function _getUserStatus(uint256 status) private pure returns (string memory) {
+        string[3] memory statuses = [
+            'NONE',
+            'RUNNING',
+            'RAN'
+        ];
+        return statuses[status];
+    }
 }

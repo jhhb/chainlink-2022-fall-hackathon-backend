@@ -29,15 +29,24 @@ import type {
 
 export interface VRFD20Interface extends utils.Interface {
   functions: {
+    "getUserStatus(address)": FunctionFragment;
     "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
     "rollDice()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "house" | "rawFulfillRandomWords" | "rollDice"
+    nameOrSignatureOrTopic:
+      | "getUserStatus"
+      | "house"
+      | "rawFulfillRandomWords"
+      | "rollDice"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "getUserStatus",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "house",
     values: [PromiseOrValue<string>]
@@ -48,6 +57,10 @@ export interface VRFD20Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "rollDice", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "getUserStatus",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "house", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rawFulfillRandomWords",
@@ -113,6 +126,11 @@ export interface VRFD20 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    getUserStatus(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -128,6 +146,11 @@ export interface VRFD20 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  getUserStatus(
+    addr: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   house(
     user_address: PromiseOrValue<string>,
@@ -145,6 +168,11 @@ export interface VRFD20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    getUserStatus(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -180,6 +208,11 @@ export interface VRFD20 extends BaseContract {
   };
 
   estimateGas: {
+    getUserStatus(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -197,6 +230,11 @@ export interface VRFD20 extends BaseContract {
   };
 
   populateTransaction: {
+    getUserStatus(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
