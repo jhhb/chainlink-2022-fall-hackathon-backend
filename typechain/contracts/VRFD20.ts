@@ -29,30 +29,15 @@ import type {
 
 export interface VRFD20Interface extends utils.Interface {
   functions: {
-    "getKeyHash()": FunctionFragment;
-    "getSubscriptionId()": FunctionFragment;
     "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
     "rollDice()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "getKeyHash"
-      | "getSubscriptionId"
-      | "house"
-      | "rawFulfillRandomWords"
-      | "rollDice"
+    nameOrSignatureOrTopic: "house" | "rawFulfillRandomWords" | "rollDice"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "getKeyHash",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSubscriptionId",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "house",
     values: [PromiseOrValue<string>]
@@ -63,11 +48,6 @@ export interface VRFD20Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "rollDice", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "getKeyHash", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getSubscriptionId",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "house", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rawFulfillRandomWords",
@@ -133,10 +113,6 @@ export interface VRFD20 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    getKeyHash(overrides?: CallOverrides): Promise<[string]>;
-
-    getSubscriptionId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -152,10 +128,6 @@ export interface VRFD20 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
-
-  getKeyHash(overrides?: CallOverrides): Promise<string>;
-
-  getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
 
   house(
     user_address: PromiseOrValue<string>,
@@ -173,10 +145,6 @@ export interface VRFD20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    getKeyHash(overrides?: CallOverrides): Promise<string>;
-
-    getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -212,10 +180,6 @@ export interface VRFD20 extends BaseContract {
   };
 
   estimateGas: {
-    getKeyHash(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSubscriptionId(overrides?: CallOverrides): Promise<BigNumber>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -233,10 +197,6 @@ export interface VRFD20 extends BaseContract {
   };
 
   populateTransaction: {
-    getKeyHash(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getSubscriptionId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     house(
       user_address: PromiseOrValue<string>,
       overrides?: CallOverrides

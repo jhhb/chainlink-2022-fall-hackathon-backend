@@ -21,23 +21,10 @@ const deployFunction: DeployFunction = async () => {
 
         const linkToken = await deploy(`LinkToken`, { from: deployer, log: true })
 
-        await deploy(`MockV3Aggregator`, {
-            contract: `MockV3Aggregator`,
-            from: deployer,
-            log: true,
-            args: [DECIMALS, INITIAL_PRICE],
-        })
-
         await deploy("VRFCoordinatorV2Mock", {
             from: deployer,
             log: true,
             args: [BASE_FEE, GAS_PRICE_LINK],
-        })
-
-        await deploy(`MockOracle`, {
-            from: deployer,
-            log: true,
-            args: [linkToken.address],
         })
 
         log(`Mocks Deployed!`)
