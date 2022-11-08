@@ -36,7 +36,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
     // The gas lane to use, which specifies the maximum gas price to bump to.
     // For a list of available gas lanes on each network,
     // see https://docs.chain.link/docs/vrf-contracts/#configurations
-//    bytes32 s_keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
+    // bytes32 s_keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
 
     // Depends on the number of requested values that you want sent to the
     // fulfillRandomWords() function. Storing each word costs about 20,000 gas,
@@ -137,8 +137,9 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @return house as a string
      */
     function house(address user_address) public view returns (string memory) {
-        require(user_address_to_result[user_address] != 0, 'You must first call rollDice before getting a house.');
-        require(user_address_to_status[user_address] != ROLL_STATUS_RUNNING, 'You are already rolling. Please wait.');
+        // TODO: JB - See if there is a way to simplify the state management.
+        require(user_address_to_status[user_address] != ROLL_STATUS_RUNNING, 'The requested address is currently rolling. Please wait.');
+        require(user_address_to_result[user_address] != 0, 'The requested address must first call rollDice itself before a house is computed.');
 
         return getHouseName(user_address_to_result[user_address]);
     }
