@@ -120,7 +120,8 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @param randomWords  uint256[] The random result returned by the oracle.
      */
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
-        // TODO: JB - May need handling for a non-existent request.
+        // TODO: JB - May need handling for a non-existent request. However, I can't figure out a way to test that
+        // without trigerring a mock-side error.
         address user_address = s_rollers[requestId];
         uint256 d20Value = (randomWords[0] % 20) + 1;
 

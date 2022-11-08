@@ -85,5 +85,25 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
           await expect(vrfConsumer.connect(account2).rollDice()).to.emit(vrfConsumer, "DiceRolled");
         });
       })
+    });
+
+    describe('#fulfillRandomWords', async () => {
+      it('emits the expected events even when fulfillments occur out of order', async () => {
+        const [account1, account2] = await ethers.getSigners();
+
+        await vrfConsumer.connect(account1).rollDice();
+
+        await vrfConsumer.connect(account2).rollDice();
+
+        const secondRequestFulfillmentArgs = { requestId: 2, value: 2}
+        await expect(
+          vrfCoordinatorV2Mock.fulfillRandomWords(secondRequestFulfillmentArgs.requestId, vrfConsumer.address)
+        ).to.emit(vrfConsumer, "DiceLanded").withArgs(secondRequestFulfillmentArgs.requestId, secondRequestFulfillmentArgs.value);
+
+        const firstRequestFulfillmentArgs = {requestId: 1, value: 2}
+        await expect(
+          vrfCoordinatorV2Mock.fulfillRandomWords(firstRequestFulfillmentArgs.requestId, vrfConsumer.address)
+        ).to.emit(vrfConsumer, "DiceLanded").withArgs(firstRequestFulfillmentArgs.requestId, secondRequestFulfillmentArgs.value);
+      })
     })
   })
