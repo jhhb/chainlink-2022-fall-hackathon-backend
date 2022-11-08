@@ -174,12 +174,4 @@ contract VRFD20 is VRFConsumerBaseV2 {
         ];
         return houseNames[id - 1];
     }
-
-    function getSubscriptionId() public view returns (uint64) {
-        return s_subscriptionId;
-    }
-
-    function getKeyHash() public view returns (bytes32) {
-        return s_keyHash;
-    }
 }
