@@ -33,7 +33,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       .withArgs(1, account1.address)
 
                   await expect(vrfConsumer.rollDice()).to.be.revertedWith(
-                      "You must wait for your current roll to complete before rolling again"
+                      "You must wait for your current question to be answered."
                   )
               })
 
@@ -138,7 +138,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   await vrfConsumer.connect(account1).rollDice()
 
                   await expect(vrfConsumer.connect(account1).rollDice()).to.be.revertedWith(
-                      "You must wait for your current roll to complete before rolling again"
+                      "You must wait for your current question to be answered."
                   )
 
                   const initialRequestId = 1
@@ -180,7 +180,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       await expect(
                           vrfConsumer.connect(account1).house(account1.address)
                       ).to.be.revertedWith(
-                          "The requested address is currently rolling. Please wait."
+                          "The requested address is currently asking. Please wait."
                       )
                   })
               })

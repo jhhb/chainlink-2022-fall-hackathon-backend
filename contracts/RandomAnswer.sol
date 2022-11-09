@@ -84,7 +84,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
     function rollDice() public returns (uint256 requestId) {
         address asker = msg.sender;
         // If question is currently in progress for user, do not allow.
-        require(userAddressToStatus[asker] != ASK_STATUS_RUNNING, "You must wait for your current roll to complete before rolling again");
+        require(userAddressToStatus[asker] != ASK_STATUS_RUNNING, "You must wait for your current question to be answered.");
         
         // Will revert if subscription is not set and funded.
         requestId = coordinator.requestRandomWords(
@@ -133,7 +133,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
      */
     function house(address userAddress) public view returns (string memory) {
         // TODO: JB - See if there is a way to simplify the state management.
-        require(userAddressToStatus[userAddress] != ASK_STATUS_RUNNING, "The requested address is currently rolling. Please wait.");
+        require(userAddressToStatus[userAddress] != ASK_STATUS_RUNNING, "The requested address is currently asking. Please wait.");
         require(userAddressToResult[userAddress] != 0, "The requested address must first call rollDice itself before a house is computed.");
 
         return getHouseName(userAddressToResult[userAddress]);
