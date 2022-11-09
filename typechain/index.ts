@@ -30,7 +30,7 @@ export type { LinkERC20Basic } from "./@chainlink/token/contracts/v0.4/token/Lin
 export { LinkERC20Basic__factory } from "./factories/@chainlink/token/contracts/v0.4/token/LinkERC20Basic__factory";
 export type { LinkStandardToken } from "./@chainlink/token/contracts/v0.4/token/LinkStandardToken";
 export { LinkStandardToken__factory } from "./factories/@chainlink/token/contracts/v0.4/token/LinkStandardToken__factory";
+export type { RandomAnswer } from "./contracts/RandomAnswer";
+export { RandomAnswer__factory } from "./factories/contracts/RandomAnswer__factory";
 export type { RandomNumberConsumerV2 } from "./contracts/RandomNumberConsumerV2";
 export { RandomNumberConsumerV2__factory } from "./factories/contracts/RandomNumberConsumerV2__factory";
-export type { VRFD20 } from "./contracts/VRFD20";
-export { VRFD20__factory } from "./factories/contracts/VRFD20__factory";
