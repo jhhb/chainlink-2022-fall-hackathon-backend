@@ -47,7 +47,7 @@ const deployFunction: DeployFunction = async ({ getNamedAccounts, deployments })
         : VERIFICATION_BLOCK_CONFIRMATIONS
 
     const args = [subscriptionId, vrfCoordinatorAddress, keyHash];
-    const vrfd20 = await deploy("VRFD20", {
+    const randomAnswer = await deploy("RandomAnswer", {
         from: deployer,
         args: args,
         log: true,
@@ -56,17 +56,17 @@ const deployFunction: DeployFunction = async ({ getNamedAccounts, deployments })
 
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...")
-        await verify(vrfd20.address, args)
+        await verify(randomAnswer.address, args)
     }
 
     // TODO: JB - Update this.
     log("TODO: RandomNumberConsumer contract with the following command")
     const networkName = network.name == "hardhat" ? "localhost" : network.name
     log(
-        `yarn hardhat TODO --contract ${vrfd20.address} --network ${networkName}`
+        `yarn hardhat TODO --contract ${randomAnswer.address} --network ${networkName}`
     )
     log("----------------------------------------------------")
 }
 
 export default deployFunction
-deployFunction.tags = [`all`, `vrfd20`]
+deployFunction.tags = [`all`, `randomAnswer`]

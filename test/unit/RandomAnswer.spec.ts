@@ -3,18 +3,18 @@ import { expect } from "chai"
 import { network, deployments, ethers, getNamedAccounts } from "hardhat"
 import { address } from "hardhat/internal/core/config/config-validation"
 import { developmentChains, networkConfig } from "../../helper-hardhat-config"
-import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
+import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
 
 !developmentChains.includes(network.name)
     ? describe.skip
-    : describe("VRFD20 Unit Tests", async function () {
-          let vrfConsumer: VRFD20
+    : describe("RandomAnswer Unit Tests", async function () {
+          let vrfConsumer: RandomAnswer
           let vrfCoordinatorV2Mock: VRFCoordinatorV2Mock
 
           describe("#rollDice", async () => {
               beforeEach(async () => {
-                  await deployments.fixture(["mocks", "vrfd20"])
-                  vrfConsumer = await ethers.getContract("VRFD20")
+                  await deployments.fixture(["mocks", "randomAnswer"])
+                  vrfConsumer = await ethers.getContract("RandomAnswer")
 
                   vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
               })
@@ -94,8 +94,8 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
 
           describe("#fulfillRandomWords", async () => {
               beforeEach(async () => {
-                  await deployments.fixture(["mocks", "vrfd20"])
-                  vrfConsumer = await ethers.getContract("VRFD20")
+                  await deployments.fixture(["mocks", "randomAnswer"])
+                  vrfConsumer = await ethers.getContract("RandomAnswer")
 
                   vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
               })
@@ -160,8 +160,8 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
 
           describe("#house", () => {
               beforeEach(async () => {
-                  await deployments.fixture(["mocks", "vrfd20"])
-                  vrfConsumer = await ethers.getContract("VRFD20")
+                  await deployments.fixture(["mocks", "randomAnswer"])
+                  vrfConsumer = await ethers.getContract("RandomAnswer")
 
                   vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
               })
@@ -212,8 +212,8 @@ import { VRFD20, VRFCoordinatorV2Mock } from "../../typechain"
 
           describe("#getUserStatus", () => {
             beforeEach(async () => {
-              await deployments.fixture(["mocks", "vrfd20"])
-              vrfConsumer = await ethers.getContract("VRFD20");
+              await deployments.fixture(["mocks", "randomAnswer"])
+              vrfConsumer = await ethers.getContract("RandomAnswer");
 
               vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
             });

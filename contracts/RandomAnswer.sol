@@ -21,7 +21,7 @@ import "hardhat/console.sol";
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
 
-contract VRFD20 is VRFConsumerBaseV2 {
+contract RandomAnswer is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface private coordinator;
     
     uint8 constant private ROLL_STATUS_RUNNING = 1;
