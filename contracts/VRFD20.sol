@@ -64,9 +64,9 @@ contract VRFD20 is VRFConsumerBaseV2 {
     /**
      * @notice Constructor inherits VRFConsumerBaseV2
      *
-     * @dev NETWORK: Goerli
-     *
-     * @param _subscriptionId subscription id that this consumer contract can use
+     * @param _subscriptionId - the subscription ID that this contract uses for funding requests
+     * @param _vrfCoordinator - coordinator, check https://docs.chain.link/docs/vrf-contracts/#configurations
+     * @param _keyHash - the gas lane to use, which specifies the maximum gas price to bump to
      */
     constructor(uint64 _subscriptionId, address vrfCoordinator, bytes32 _keyHash) VRFConsumerBaseV2(vrfCoordinator) {
         coordinator = VRFCoordinatorV2Interface(vrfCoordinator);
