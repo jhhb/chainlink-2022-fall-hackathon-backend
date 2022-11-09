@@ -1,7 +1,5 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers"
 import { expect } from "chai"
 import { network, deployments, ethers, getNamedAccounts } from "hardhat"
-import { address } from "hardhat/internal/core/config/config-validation"
 import { developmentChains, networkConfig } from "../../helper-hardhat-config"
 import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
 
@@ -23,7 +21,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   const [account1] = await ethers.getSigners()
 
                   await expect(vrfConsumer.rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(1, account1.address)
               })
 
@@ -31,7 +29,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   const [account1] = await ethers.getSigners()
 
                   await expect(vrfConsumer.rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(1, account1.address)
 
                   await expect(vrfConsumer.rollDice()).to.be.revertedWith(
@@ -43,11 +41,11 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   const [account1, account2] = await ethers.getSigners()
 
                   await expect(vrfConsumer.connect(account1).rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(1, account1.address)
 
                   await expect(vrfConsumer.connect(account2).rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(2, account2.address)
               })
 
@@ -61,11 +59,11 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   await expect(
                       vrfCoordinatorV2Mock.fulfillRandomWords(firstRequestId, vrfConsumer.address)
                   )
-                      .to.emit(vrfConsumer, "DiceLanded")
+                      .to.emit(vrfConsumer, "QuestionAnswered")
                       .withArgs(firstRequestId, transformedResult)
 
                   await expect(vrfConsumer.rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(2, account1.address)
               })
 
@@ -76,7 +74,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       expect(await vrfConsumer.signer.getAddress()).to.eq(account1.address)
                       await expect(vrfConsumer.connect(account1).rollDice()).to.emit(
                           vrfConsumer,
-                          "DiceRolled"
+                          "QuestionAsked"
                       )
                   })
 
@@ -86,7 +84,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       expect(await vrfConsumer.signer.getAddress()).to.not.eq(account2.address)
                       await expect(vrfConsumer.connect(account2).rollDice()).to.emit(
                           vrfConsumer,
-                          "DiceRolled"
+                          "QuestionAsked"
                       )
                   })
               })
@@ -114,7 +112,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                           vrfConsumer.address
                       )
                   )
-                      .to.emit(vrfConsumer, "DiceLanded")
+                      .to.emit(vrfConsumer, "QuestionAnswered")
                       .withArgs(
                           secondRequestFulfillmentArgs.requestId,
                           secondRequestFulfillmentArgs.value
@@ -127,7 +125,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                           vrfConsumer.address
                       )
                   )
-                      .to.emit(vrfConsumer, "DiceLanded")
+                      .to.emit(vrfConsumer, "QuestionAnswered")
                       .withArgs(
                           firstRequestFulfillmentArgs.requestId,
                           secondRequestFulfillmentArgs.value
@@ -148,12 +146,12 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   await expect(
                       vrfCoordinatorV2Mock.fulfillRandomWords(initialRequestId, vrfConsumer.address)
                   )
-                      .to.emit(vrfConsumer, "DiceLanded")
+                      .to.emit(vrfConsumer, "QuestionAnswered")
                       .withArgs(initialRequestId, expectedRandomValue)
 
                   const secondRequestId = 2
                   await expect(vrfConsumer.connect(account1).rollDice())
-                      .to.emit(vrfConsumer, "DiceRolled")
+                      .to.emit(vrfConsumer, "QuestionAsked")
                       .withArgs(secondRequestId, account1.address)
               })
           })

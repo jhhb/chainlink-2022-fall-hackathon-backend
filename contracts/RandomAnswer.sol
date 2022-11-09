@@ -59,8 +59,8 @@ contract RandomAnswer is VRFConsumerBaseV2 {
     mapping(address => uint256) private userAddressToStatus;
     mapping(address => uint256) private userAddressToResult;
 
-    event DiceRolled(uint256 indexed requestId, address indexed roller);
-    event DiceLanded(uint256 indexed requestId, uint256 indexed result);
+    event QuestionAsked(uint256 indexed requestId, address indexed asker);
+    event QuestionAnswered(uint256 indexed requestId, uint256 indexed asker);
 
     /**
      * @notice Constructor inherits VRFConsumerBaseV2
@@ -83,7 +83,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
      */
     function rollDice() public returns (uint256 requestId) {
         address asker = msg.sender;
-        // If roll is currently in progress for user, do not allow.
+        // If question is currently in progress for user, do not allow.
         require(userAddressToStatus[asker] != ASK_STATUS_RUNNING, "You must wait for your current roll to complete before rolling again");
         
         // Will revert if subscription is not set and funded.
@@ -98,7 +98,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
         requestIdToAddress[requestId] = asker;
         userAddressToStatus[asker] = ASK_STATUS_RUNNING;
         // TODO - zero out previous result ?
-        emit DiceRolled(requestId, asker);
+        emit QuestionAsked(requestId, asker);
     }
 
     /**
@@ -123,7 +123,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
         userAddressToResult[userAddress] = d20Value;
         userAddressToStatus[userAddress] = ASK_STATUS_RAN;
         
-        emit DiceLanded(requestId, d20Value);
+        emit QuestionAnswered(requestId, d20Value);
     }
 
     /**
@@ -133,7 +133,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
      */
     function house(address userAddress) public view returns (string memory) {
         // TODO: JB - See if there is a way to simplify the state management.
-        require(userAddressToStatus[userAddress] != ROLL_STATUS_RUNNING, "The requested address is currently rolling. Please wait.");
+        require(userAddressToStatus[userAddress] != ASK_STATUS_RUNNING, "The requested address is currently rolling. Please wait.");
         require(userAddressToResult[userAddress] != 0, "The requested address must first call rollDice itself before a house is computed.");
 
         return getHouseName(userAddressToResult[userAddress]);

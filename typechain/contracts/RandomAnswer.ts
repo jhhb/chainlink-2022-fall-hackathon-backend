@@ -69,35 +69,36 @@ export interface RandomAnswerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "rollDice", data: BytesLike): Result;
 
   events: {
-    "DiceLanded(uint256,uint256)": EventFragment;
-    "DiceRolled(uint256,address)": EventFragment;
+    "QuestionAnswered(uint256,uint256)": EventFragment;
+    "QuestionAsked(uint256,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "DiceLanded"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DiceRolled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "QuestionAnswered"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "QuestionAsked"): EventFragment;
 }
 
-export interface DiceLandedEventObject {
+export interface QuestionAnsweredEventObject {
   requestId: BigNumber;
-  result: BigNumber;
+  asker: BigNumber;
 }
-export type DiceLandedEvent = TypedEvent<
+export type QuestionAnsweredEvent = TypedEvent<
   [BigNumber, BigNumber],
-  DiceLandedEventObject
+  QuestionAnsweredEventObject
 >;
 
-export type DiceLandedEventFilter = TypedEventFilter<DiceLandedEvent>;
+export type QuestionAnsweredEventFilter =
+  TypedEventFilter<QuestionAnsweredEvent>;
 
-export interface DiceRolledEventObject {
+export interface QuestionAskedEventObject {
   requestId: BigNumber;
-  roller: string;
+  asker: string;
 }
-export type DiceRolledEvent = TypedEvent<
+export type QuestionAskedEvent = TypedEvent<
   [BigNumber, string],
-  DiceRolledEventObject
+  QuestionAskedEventObject
 >;
 
-export type DiceRolledEventFilter = TypedEventFilter<DiceRolledEvent>;
+export type QuestionAskedEventFilter = TypedEventFilter<QuestionAskedEvent>;
 
 export interface RandomAnswer extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -188,23 +189,23 @@ export interface RandomAnswer extends BaseContract {
   };
 
   filters: {
-    "DiceLanded(uint256,uint256)"(
+    "QuestionAnswered(uint256,uint256)"(
       requestId?: PromiseOrValue<BigNumberish> | null,
-      result?: PromiseOrValue<BigNumberish> | null
-    ): DiceLandedEventFilter;
-    DiceLanded(
+      asker?: PromiseOrValue<BigNumberish> | null
+    ): QuestionAnsweredEventFilter;
+    QuestionAnswered(
       requestId?: PromiseOrValue<BigNumberish> | null,
-      result?: PromiseOrValue<BigNumberish> | null
-    ): DiceLandedEventFilter;
+      asker?: PromiseOrValue<BigNumberish> | null
+    ): QuestionAnsweredEventFilter;
 
-    "DiceRolled(uint256,address)"(
+    "QuestionAsked(uint256,address)"(
       requestId?: PromiseOrValue<BigNumberish> | null,
-      roller?: PromiseOrValue<string> | null
-    ): DiceRolledEventFilter;
-    DiceRolled(
+      asker?: PromiseOrValue<string> | null
+    ): QuestionAskedEventFilter;
+    QuestionAsked(
       requestId?: PromiseOrValue<BigNumberish> | null,
-      roller?: PromiseOrValue<string> | null
-    ): DiceRolledEventFilter;
+      asker?: PromiseOrValue<string> | null
+    ): QuestionAskedEventFilter;
   };
 
   estimateGas: {
