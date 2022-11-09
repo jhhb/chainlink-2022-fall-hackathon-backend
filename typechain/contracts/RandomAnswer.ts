@@ -29,20 +29,24 @@ import type {
 
 export interface RandomAnswerInterface extends utils.Interface {
   functions: {
+    "askQuestion()": FunctionFragment;
     "getUserStatus(address)": FunctionFragment;
     "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
-    "rollDice()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "askQuestion"
       | "getUserStatus"
       | "house"
       | "rawFulfillRandomWords"
-      | "rollDice"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "askQuestion",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getUserStatus",
     values: [PromiseOrValue<string>]
@@ -55,8 +59,11 @@ export interface RandomAnswerInterface extends utils.Interface {
     functionFragment: "rawFulfillRandomWords",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[]]
   ): string;
-  encodeFunctionData(functionFragment: "rollDice", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "askQuestion",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getUserStatus",
     data: BytesLike
@@ -66,7 +73,6 @@ export interface RandomAnswerInterface extends utils.Interface {
     functionFragment: "rawFulfillRandomWords",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "rollDice", data: BytesLike): Result;
 
   events: {
     "QuestionAnswered(uint256,uint256)": EventFragment;
@@ -127,6 +133,10 @@ export interface RandomAnswer extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    askQuestion(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     getUserStatus(
       addr: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -142,11 +152,11 @@ export interface RandomAnswer extends BaseContract {
       randomWords: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    rollDice(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
   };
+
+  askQuestion(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   getUserStatus(
     addr: PromiseOrValue<string>,
@@ -164,11 +174,9 @@ export interface RandomAnswer extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  rollDice(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
+    askQuestion(overrides?: CallOverrides): Promise<BigNumber>;
+
     getUserStatus(
       addr: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -184,8 +192,6 @@ export interface RandomAnswer extends BaseContract {
       randomWords: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    rollDice(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -209,6 +215,10 @@ export interface RandomAnswer extends BaseContract {
   };
 
   estimateGas: {
+    askQuestion(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getUserStatus(
       addr: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -222,15 +232,15 @@ export interface RandomAnswer extends BaseContract {
     rawFulfillRandomWords(
       requestId: PromiseOrValue<BigNumberish>,
       randomWords: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    rollDice(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    askQuestion(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     getUserStatus(
       addr: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -244,10 +254,6 @@ export interface RandomAnswer extends BaseContract {
     rawFulfillRandomWords(
       requestId: PromiseOrValue<BigNumberish>,
       randomWords: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rollDice(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
