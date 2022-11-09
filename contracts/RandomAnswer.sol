@@ -6,13 +6,14 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "hardhat/console.sol";
 
 /**
- * @notice A Chainlink VRF consumer which uses randomness to mimic the rolling
- * of a 20 sided dice
+ * @notice A Chainlink VRF consumer which uses randomness to mimic getting
+ * a random answer from a Magic Eight Ball
  */
 
 /**
  * Request testnet LINK and ETH here: https://faucets.chain.link/
- * Find information on LINK Token Contracts and get the latest ETH and LINK faucets here: https://docs.chain.link/docs/link-token-contracts/
+ * Find information on LINK Token Contracts and get the latest ETH and LINK
+ * faucets here: https://docs.chain.link/docs/link-token-contracts/
  */
 
 /**
@@ -24,8 +25,8 @@ import "hardhat/console.sol";
 contract RandomAnswer is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface private coordinator;
     
-    uint8 constant private ROLL_STATUS_RUNNING = 1;
-    uint8 constant private ROLL_STATUS_RAN = 2;
+    uint8 constant private ASK_STATUS_RUNNING = 1;
+    uint8 constant private ASK_STATUS_RAN = 2;
 
     uint64 private subscriptionId;
     bytes32 private keyHash;
@@ -54,7 +55,7 @@ contract RandomAnswer is VRFConsumerBaseV2 {
     uint32 private numWords = 1;
 
     // map request IDs to user address
-    mapping(uint256 => address) private rollers;
+    mapping(uint256 => address) private requestIdToAddress;
     mapping(address => uint256) private userAddressToStatus;
     mapping(address => uint256) private userAddressToResult;
 
@@ -81,9 +82,9 @@ contract RandomAnswer is VRFConsumerBaseV2 {
      * @dev You must review your implementation details with extreme care.
      */
     function rollDice() public returns (uint256 requestId) {
-        address roller = msg.sender;
+        address asker = msg.sender;
         // If roll is currently in progress for user, do not allow.
-        require(userAddressToStatus[roller] != ROLL_STATUS_RUNNING, "You must wait for your current roll to complete before rolling again");
+        require(userAddressToStatus[asker] != ASK_STATUS_RUNNING, "You must wait for your current roll to complete before rolling again");
         
         // Will revert if subscription is not set and funded.
         requestId = coordinator.requestRandomWords(
@@ -94,10 +95,10 @@ contract RandomAnswer is VRFConsumerBaseV2 {
             numWords
         );
 
-        rollers[requestId] = roller;
-        userAddressToStatus[roller] = ROLL_STATUS_RUNNING;
+        requestIdToAddress[requestId] = asker;
+        userAddressToStatus[asker] = ASK_STATUS_RUNNING;
         // TODO - zero out previous result ?
-        emit DiceRolled(requestId, roller);
+        emit DiceRolled(requestId, asker);
     }
 
     /**
@@ -116,17 +117,17 @@ contract RandomAnswer is VRFConsumerBaseV2 {
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
         // TODO: JB - May need handling for a non-existent request. However, I can"t figure out a way to test that
         // without trigerring a mock-side error.
-        address userAddress = rollers[requestId];
+        address userAddress = requestIdToAddress[requestId];
         uint256 d20Value = (randomWords[0] % 20) + 1;
 
         userAddressToResult[userAddress] = d20Value;
-        userAddressToStatus[userAddress] = ROLL_STATUS_RAN;
+        userAddressToStatus[userAddress] = ASK_STATUS_RAN;
         
         emit DiceLanded(requestId, d20Value);
     }
 
     /**
-     * @notice Get the house assigned to the user once the address has rolled
+     * @notice Get the house assigned to the user once the address has asked
      * @param userAddress address
      * @return house as a string
      */
