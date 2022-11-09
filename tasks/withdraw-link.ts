@@ -3,7 +3,7 @@ import { BigNumber, utils, constants, ContractTransaction } from "ethers"
 import { task } from "hardhat/config"
 import { HardhatRuntimeEnvironment, TaskArguments } from "hardhat/types"
 import { networkConfig } from "../helper-hardhat-config"
-import { APIConsumer, APIConsumer__factory, LinkToken, LinkToken__factory } from "../typechain"
+import { LinkToken, LinkToken__factory } from "../typechain"
 
 task("withdraw-link", "Returns any LINK left in deployed contract")
     .addParam("contract", "The address of the contract")
@@ -28,17 +28,7 @@ task("withdraw-link", "Returns any LINK left in deployed contract")
         console.log(`LINK balance of contract: ${contractAddr} is ${utils.formatEther(balance)}`)
 
         if (balance > constants.Zero) {
-            // Create connection to Consumer Contract and call the withdraw function
-            const anyApiConsumerContract: APIConsumer = APIConsumer__factory.connect(
-                contractAddr,
-                signer
-            )
-            const transaction: ContractTransaction = await anyApiConsumerContract.withdrawLink()
-            await transaction.wait()
-
-            console.log(
-                `All LINK withdrew from contract ${contractAddr}. Transaction Hash: ${transaction.hash}`
-            )
+            console.log("no-op")
         } else {
             console.log(`Contract doesn't have any LINK to withdraw`)
         }

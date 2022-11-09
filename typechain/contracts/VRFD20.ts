@@ -132,7 +132,7 @@ export interface VRFD20 extends BaseContract {
     ): Promise<[string]>;
 
     house(
-      user_address: PromiseOrValue<string>,
+      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -153,7 +153,7 @@ export interface VRFD20 extends BaseContract {
   ): Promise<string>;
 
   house(
-    user_address: PromiseOrValue<string>,
+    userAddress: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -174,7 +174,7 @@ export interface VRFD20 extends BaseContract {
     ): Promise<string>;
 
     house(
-      user_address: PromiseOrValue<string>,
+      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -214,7 +214,7 @@ export interface VRFD20 extends BaseContract {
     ): Promise<BigNumber>;
 
     house(
-      user_address: PromiseOrValue<string>,
+      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -236,7 +236,7 @@ export interface VRFD20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     house(
-      user_address: PromiseOrValue<string>,
+      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

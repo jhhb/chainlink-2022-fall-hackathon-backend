@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import '@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol';
-import '@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol';
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "hardhat/console.sol";
 
 /**
@@ -22,13 +22,13 @@ import "hardhat/console.sol";
  */
 
 contract VRFD20 is VRFConsumerBaseV2 {
-    VRFCoordinatorV2Interface COORDINATOR;
+    VRFCoordinatorV2Interface private coordinator;
     
-    uint8 ROLL_STATUS_RUNNING = 1;
-    uint8 ROLL_STATUS_RAN = 2;
+    uint8 constant private ROLL_STATUS_RUNNING = 1;
+    uint8 constant private ROLL_STATUS_RAN = 2;
 
-    uint64 s_subscriptionId;
-    bytes32 s_keyHash;
+    uint64 private subscriptionId;
+    bytes32 private keyHash;
 
     // Goerli coordinator. For other networks,
     // see https://docs.chain.link/docs/vrf-contracts/#configurations
@@ -36,7 +36,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
     // The gas lane to use, which specifies the maximum gas price to bump to.
     // For a list of available gas lanes on each network,
     // see https://docs.chain.link/docs/vrf-contracts/#configurations
-    // bytes32 s_keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
+    // bytes32 keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
 
     // Depends on the number of requested values that you want sent to the
     // fulfillRandomWords() function. Storing each word costs about 20,000 gas,
@@ -44,24 +44,19 @@ contract VRFD20 is VRFConsumerBaseV2 {
     // this limit based on the network that you select, the size of the request,
     // and the processing of the callback request in the fulfillRandomWords()
     // function.
-    uint32 callbackGasLimit = 40000;
+    uint32 private callbackGasLimit = 40000;
 
     // The default is 3, but you can set this higher.
-    uint16 requestConfirmations = 3;
+    uint16 private requestConfirmations = 3;
 
     // For this example, retrieve 1 random value in one request.
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
-    uint32 numWords = 1;
-    address s_owner;
+    uint32 private numWords = 1;
 
     // map request IDs to user address
-    mapping(uint256 => address) private s_rollers;
-    // map vrf results to rollers
-    // The default value in a mapping if nothing has been set is 0
-    mapping(address => uint256) private s_results;
-
-    mapping(address => uint256) private user_address_to_status;
-    mapping(address => uint256) private user_address_to_result;
+    mapping(uint256 => address) private rollers;
+    mapping(address => uint256) private userAddressToStatus;
+    mapping(address => uint256) private userAddressToResult;
 
     event DiceRolled(uint256 indexed requestId, address indexed roller);
     event DiceLanded(uint256 indexed requestId, uint256 indexed result);
@@ -71,13 +66,12 @@ contract VRFD20 is VRFConsumerBaseV2 {
      *
      * @dev NETWORK: Goerli
      *
-     * @param subscriptionId subscription id that this consumer contract can use
+     * @param _subscriptionId subscription id that this consumer contract can use
      */
-    constructor(uint64 subscriptionId, address vrfCoordinator, bytes32 keyHash) VRFConsumerBaseV2(vrfCoordinator) {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
-        s_owner = msg.sender;
-        s_subscriptionId = subscriptionId;
-        s_keyHash = keyHash;
+    constructor(uint64 _subscriptionId, address vrfCoordinator, bytes32 _keyHash) VRFConsumerBaseV2(vrfCoordinator) {
+        coordinator = VRFCoordinatorV2Interface(vrfCoordinator);
+        subscriptionId = _subscriptionId;
+        keyHash = _keyHash;
     }
 
     /**
@@ -89,19 +83,19 @@ contract VRFD20 is VRFConsumerBaseV2 {
     function rollDice() public returns (uint256 requestId) {
         address roller = msg.sender;
         // If roll is currently in progress for user, do not allow.
-        require(user_address_to_status[roller] != ROLL_STATUS_RUNNING, 'You must wait for your current roll to complete before rolling again');
+        require(userAddressToStatus[roller] != ROLL_STATUS_RUNNING, "You must wait for your current roll to complete before rolling again");
         
         // Will revert if subscription is not set and funded.
-        requestId = COORDINATOR.requestRandomWords(
-            s_keyHash,
-            s_subscriptionId,
+        requestId = coordinator.requestRandomWords(
+            keyHash,
+            subscriptionId,
             requestConfirmations,
             callbackGasLimit,
             numWords
         );
 
-        s_rollers[requestId] = roller;
-        user_address_to_status[roller] = ROLL_STATUS_RUNNING;
+        rollers[requestId] = roller;
+        userAddressToStatus[roller] = ROLL_STATUS_RUNNING;
         // TODO - zero out previous result ?
         emit DiceRolled(requestId, roller);
     }
@@ -120,28 +114,28 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @param randomWords  uint256[] The random result returned by the oracle.
      */
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
-        // TODO: JB - May need handling for a non-existent request. However, I can't figure out a way to test that
+        // TODO: JB - May need handling for a non-existent request. However, I can"t figure out a way to test that
         // without trigerring a mock-side error.
-        address user_address = s_rollers[requestId];
+        address userAddress = rollers[requestId];
         uint256 d20Value = (randomWords[0] % 20) + 1;
 
-        user_address_to_result[user_address] = d20Value;
-        user_address_to_status[user_address] = ROLL_STATUS_RAN;
+        userAddressToResult[userAddress] = d20Value;
+        userAddressToStatus[userAddress] = ROLL_STATUS_RAN;
         
         emit DiceLanded(requestId, d20Value);
     }
 
     /**
      * @notice Get the house assigned to the user once the address has rolled
-     * @param user_address address
+     * @param userAddress address
      * @return house as a string
      */
-    function house(address user_address) public view returns (string memory) {
+    function house(address userAddress) public view returns (string memory) {
         // TODO: JB - See if there is a way to simplify the state management.
-        require(user_address_to_status[user_address] != ROLL_STATUS_RUNNING, 'The requested address is currently rolling. Please wait.');
-        require(user_address_to_result[user_address] != 0, 'The requested address must first call rollDice itself before a house is computed.');
+        require(userAddressToStatus[userAddress] != ROLL_STATUS_RUNNING, "The requested address is currently rolling. Please wait.");
+        require(userAddressToResult[userAddress] != 0, "The requested address must first call rollDice itself before a house is computed.");
 
-        return getHouseName(user_address_to_result[user_address]);
+        return getHouseName(userAddressToResult[userAddress]);
     }
 
     /**
@@ -151,40 +145,40 @@ contract VRFD20 is VRFConsumerBaseV2 {
      */
     function getHouseName(uint256 id) private pure returns (string memory) {
         string[20] memory houseNames = [
-            'Targaryen',
-            'Lannister',
-            'Stark',
-            'Tyrell',
-            'Baratheon',
-            'Martell',
-            'Tully',
-            'Bolton',
-            'Greyjoy',
-            'Arryn',
-            'Frey',
-            'Mormont',
-            'Tarley',
-            'Dayne',
-            'Umber',
-            'Valeryon',
-            'Manderly',
-            'Clegane',
-            'Glover',
-            'Karstark'
+            "Targaryen",
+            "Lannister",
+            "Stark",
+            "Tyrell",
+            "Baratheon",
+            "Martell",
+            "Tully",
+            "Bolton",
+            "Greyjoy",
+            "Arryn",
+            "Frey",
+            "Mormont",
+            "Tarley",
+            "Dayne",
+            "Umber",
+            "Valeryon",
+            "Manderly",
+            "Clegane",
+            "Glover",
+            "Karstark"
         ];
         return houseNames[id - 1];
     }
 
     function getUserStatus(address addr) public view returns (string memory) {
-        uint256 status = user_address_to_status[addr];
+        uint256 status = userAddressToStatus[addr];
         return _getUserStatus(status);
     }
 
     function _getUserStatus(uint256 status) private pure returns (string memory) {
         string[3] memory statuses = [
-            'NONE',
-            'RUNNING',
-            'RAN'
+            "NONE",
+            "RUNNING",
+            "RAN"
         ];
         return statuses[status];
     }
