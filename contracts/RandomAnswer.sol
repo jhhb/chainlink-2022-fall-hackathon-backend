@@ -127,47 +127,47 @@ contract RandomAnswer is VRFConsumerBaseV2 {
     }
 
     /**
-     * @notice Get the house assigned to the user once the address has asked
+     * @notice Get the answer assigned to the user once the address has asked
      * @param userAddress address
-     * @return house as a string
+     * @return answer as a string
      */
-    function house(address userAddress) public view returns (string memory) {
+    function answer(address userAddress) public view returns (string memory) {
         // TODO: JB - See if there is a way to simplify the state management.
         require(userAddressToStatus[userAddress] != ASK_STATUS_RUNNING, "The requested address is currently asking. Please wait.");
-        require(userAddressToResult[userAddress] != 0, "The requested address must first call #askQuestion itself before a house is computed.");
+        require(userAddressToResult[userAddress] != 0, "The requested address must first call #askQuestion itself before an answer is computed.");
 
-        return getHouseName(userAddressToResult[userAddress]);
+        return getAnswer(userAddressToResult[userAddress]);
     }
 
     /**
-     * @notice Get the house namne from the id
-     * @param id uint256
-     * @return house name string
+     * @notice Get the answer from the value. Value is stored in a range from 1 to 20, inclusive.
+     * @param idx uint256 ranges from 1 to 20, inclusive.
+     * @return answer as a string
      */
-    function getHouseName(uint256 id) private pure returns (string memory) {
-        string[20] memory houseNames = [
-            "Targaryen",
-            "Lannister",
-            "Stark",
-            "Tyrell",
-            "Baratheon",
-            "Martell",
-            "Tully",
-            "Bolton",
-            "Greyjoy",
-            "Arryn",
-            "Frey",
-            "Mormont",
-            "Tarley",
-            "Dayne",
-            "Umber",
-            "Valeryon",
-            "Manderly",
-            "Clegane",
-            "Glover",
-            "Karstark"
+    function getAnswer(uint256 idx) private pure returns (string memory) {
+        string[20] memory answers = [
+            "It is certain.",
+            "It is decidedly so.",
+            "Without a doubt.",
+            "Yes definitely.",
+            "You may reloy on it.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Cannot predict now.",
+            "Concentrate and ask again.",
+            "Don't count on it.",
+            "My reply is no.",
+            "My sources say no.",
+            "Outlook not so good.",
+            "Very doubtful."
         ];
-        return houseNames[id - 1];
+        return answers[idx - 1];
     }
 
     function getUserStatus(address addr) public view returns (string memory) {

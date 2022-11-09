@@ -29,20 +29,24 @@ import type {
 
 export interface RandomAnswerInterface extends utils.Interface {
   functions: {
+    "answer(address)": FunctionFragment;
     "askQuestion()": FunctionFragment;
     "getUserStatus(address)": FunctionFragment;
-    "house(address)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "answer"
       | "askQuestion"
       | "getUserStatus"
-      | "house"
       | "rawFulfillRandomWords"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "answer",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "askQuestion",
     values?: undefined
@@ -52,14 +56,11 @@ export interface RandomAnswerInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "house",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "rawFulfillRandomWords",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[]]
   ): string;
 
+  decodeFunctionResult(functionFragment: "answer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "askQuestion",
     data: BytesLike
@@ -68,7 +69,6 @@ export interface RandomAnswerInterface extends utils.Interface {
     functionFragment: "getUserStatus",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "house", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rawFulfillRandomWords",
     data: BytesLike
@@ -133,17 +133,17 @@ export interface RandomAnswer extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    answer(
+      userAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     askQuestion(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     getUserStatus(
       addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    house(
-      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -154,17 +154,17 @@ export interface RandomAnswer extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  answer(
+    userAddress: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   askQuestion(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   getUserStatus(
     addr: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  house(
-    userAddress: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -175,15 +175,15 @@ export interface RandomAnswer extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    answer(
+      userAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     askQuestion(overrides?: CallOverrides): Promise<BigNumber>;
 
     getUserStatus(
       addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    house(
-      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -215,17 +215,17 @@ export interface RandomAnswer extends BaseContract {
   };
 
   estimateGas: {
+    answer(
+      userAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     askQuestion(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     getUserStatus(
       addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    house(
-      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -237,17 +237,17 @@ export interface RandomAnswer extends BaseContract {
   };
 
   populateTransaction: {
+    answer(
+      userAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     askQuestion(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     getUserStatus(
       addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    house(
-      userAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -1,6 +1,6 @@
 import { expect } from "chai"
-import { network, deployments, ethers, getNamedAccounts } from "hardhat"
-import { developmentChains, networkConfig } from "../../helper-hardhat-config"
+import { network, deployments, ethers } from "hardhat"
+import { developmentChains } from "../../helper-hardhat-config"
 import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
 
 !developmentChains.includes(network.name)
@@ -156,7 +156,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
               })
           })
 
-          describe("#house", () => {
+          describe("#answer", () => {
               beforeEach(async () => {
                   await deployments.fixture(["mocks", "randomAnswer"])
                   vrfConsumer = await ethers.getContract("RandomAnswer")
@@ -168,9 +168,9 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                   it("reverts if no address has been recorded for the input address", async () => {
                       const [account1] = await ethers.getSigners()
                       await expect(
-                          vrfConsumer.connect(account1).house(account1.address)
+                          vrfConsumer.connect(account1).answer(account1.address)
                       ).to.be.revertedWith(
-                          "The requested address must first call #askQuestion itself before a house is computed."
+                          "The requested address must first call #askQuestion itself before an answer is computed."
                       )
                   })
 
@@ -178,7 +178,7 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       const [account1] = await ethers.getSigners()
                       await vrfConsumer.connect(account1).askQuestion()
                       await expect(
-                          vrfConsumer.connect(account1).house(account1.address)
+                          vrfConsumer.connect(account1).answer(account1.address)
                       ).to.be.revertedWith(
                           "The requested address is currently asking. Please wait."
                       )
@@ -191,8 +191,8 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
                       await vrfConsumer.connect(account1).askQuestion()
                       await vrfCoordinatorV2Mock.fulfillRandomWords(1, vrfConsumer.address)
 
-                      const result = await vrfConsumer.connect(account1).house(account1.address)
-                      expect(result).to.eq("Lannister")
+                      const result = await vrfConsumer.connect(account1).answer(account1.address)
+                      expect(result).to.eq("It is decidedly so.")
                   })
 
                   it("allows the sender to run the function for other addresses", async () => {
@@ -202,8 +202,8 @@ import { RandomAnswer, VRFCoordinatorV2Mock } from "../../typechain"
 
                       const result = await vrfConsumer
                           .connect(account2)
-                          .house(accountWithResult.address)
-                      expect(result).to.eq("Lannister")
+                          .answer(accountWithResult.address)
+                      expect(result).to.eq("It is decidedly so.")
                   })
               })
           })
